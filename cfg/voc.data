@@ -1,6 +1,6 @@
 classes= 20
-train  = /home/pjreddie/data/voc/train.txt
-valid  = /home/pjreddie/data/voc/2007_test.txt
+train  = /home/demlution/github/darknet_v2/train.txt
+valid  = /home/demlution/github/darknet_v2/2007_test.txt
 names = data/voc.names
-backup = backup
+backup = /home/demlution/data/extend/dataset/voc_test_backup5
 
