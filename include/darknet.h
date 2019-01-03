@@ -799,6 +799,9 @@ size_t rand_size_t();
 float rand_normal();
 float rand_uniform(float min, float max);
 
+void wait_for (unsigned int secs);
+void sleep_msg (char *msg, unsigned int secs);
+
 #ifdef __cplusplus
 }
 #endif
