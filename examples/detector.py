@@ -30,12 +30,12 @@ def show_img(img, title='title'):
     imshow(title, img)
 
 
-def test(img_path=IMG_PATH):
+def test(img_path=IMG_PATH, net=None):
     img = cv2.imread(img_path)
 
-    dn.set_gpu(0)
-    net = dn.load_net(
+    net = net or dn.load_net(
         b"gt_v2/gt.cfg", b'/home/demlution/data/extend/dataset/gt_v2_backup_v1/gt.backup', 0)
+
     meta = dn.load_meta(b"gt_v2/gt.data")
     r = dn.detect(
         net, meta, img_path.encode())
@@ -51,14 +51,22 @@ def test(img_path=IMG_PATH):
 
 
 def main(options):
-    valid_file_path = '/home/demlution/github/darknet_v2/gt_v2/valid.txt'
+    dn.set_gpu(0)
+    net = dn.load_net(
+        b"gt_v2/gt.cfg",
+        b'/home/demlution/data/extend/dataset/gt_v2_backup_v1/gt.backup',
+        0
+    )
+    valid_file_path = '/home/demlution/github/darknet_v2/gt_v2/valid_manual.txt'
     with open(valid_file_path, 'r') as f:
         text = f.read()
 
     img_path_list = text.split('\n')
 
     for path in img_path_list:
-        test(path)
+        test(path, net)
+
+    dn.free_network(net)
     return
 
 

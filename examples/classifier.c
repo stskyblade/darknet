@@ -149,7 +149,7 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
             sprintf(buff, "%s/%s_%d.weights",backup_directory,base, epoch);
             save_weights(net, buff);
         }
-        if(get_current_batch(net)%1000 == 0){
+        if(get_current_batch(net)%100 == 0){
             char buff[256];
             sprintf(buff, "%s/%s.backup",backup_directory,base);
             save_weights(net, buff);
@@ -386,7 +386,7 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
     int *indexes = calloc(topk, sizeof(int));
 
     for(i = 0; i < m; ++i){
-        int class = -1;
+        int class = -1;  // 正确分类的 index
         char *path = paths[i];
         for(j = 0; j < classes; ++j){
             if(strstr(path, labels[j])){
@@ -405,14 +405,17 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
 
         free_image(im);
         free_image(crop);
-        top_k(pred, classes, topk, indexes);
+        top_k(pred, classes, topk, indexes); // 所有分类中概率最高的 index
 
-        if(indexes[0] == class) avg_acc += 1;
+        if(indexes[0] == class) {
+            avg_acc += 1;
+            printf("valid true: %s, %d\n", paths[i], class);
+        }
         for(j = 0; j < topk; ++j){
             if(indexes[j] == class) avg_topk += 1;
         }
 
-        printf("%s, %d, %f, %f, \n", paths[i], class, pred[0], pred[1]);
+        printf("%s, %d(given: %d, %s), %f, %f, \n", paths[i], class, indexes[0], labels[indexes[0]], pred[0], pred[1]);
         printf("%d: top 1: %f, top %d: %f\n", i, avg_acc/(i+1), topk, avg_topk/(i+1));
     }
 }
@@ -573,11 +576,11 @@ void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *fi
     char **names = get_labels(name_list);
     clock_t time;
     int *indexes = calloc(top, sizeof(int));
-    char buff[256];
+    char buff[1024];
     char *input = buff;
     while(1){
         if(filename){
-            strncpy(input, filename, 256);
+            strncpy(input, filename, 1024);
         }else{
             printf("Enter Image Path: ");
             fflush(stdout);
@@ -586,7 +589,8 @@ void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *fi
             strtok(input, "\n");
         }
         image im = load_image_color(input, 0, 0);
-        image r = letterbox_image(im, net->w, net->h);
+        // image r = letterbox_image(im, net->w, net->h);
+        image r = center_crop_image(im, net->w, net->h);
         //image r = resize_min(im, 320);
         //printf("%d %d\n", r.w, r.h);
         //resize_network(net, r.w, r.h);

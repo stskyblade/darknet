@@ -618,6 +618,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         free_image(sized);
         if (filename) break;
     }
+    free_network(net);
 }
 
 /*

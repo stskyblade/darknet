@@ -94,6 +94,10 @@ load_net = lib.load_network
 load_net.argtypes = [c_char_p, c_char_p, c_int]
 load_net.restype = c_void_p
 
+free_network = lib.free_network
+free_network.argtypes = [c_void_p]
+free_network.restype = c_void_p
+
 do_nms_obj = lib.do_nms_obj
 do_nms_obj.argtypes = [POINTER(DETECTION), c_int, c_int, c_float]
 
@@ -129,6 +133,7 @@ def classify(net, meta, im):
     for i in range(meta.classes):
         res.append((meta.names[i], out[i]))
     res = sorted(res, key=lambda x: -x[1])
+    free_image(im)
     return res
 
 
@@ -153,6 +158,7 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
     res = sorted(res, key=lambda x: -x[1])
     free_image(im)
     free_detections(dets, num)
+
     return res
 
 
