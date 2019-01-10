@@ -11,10 +11,9 @@ import sys
 import os
 sys.path.append(os.path.join(os.getcwd(), 'python/'))
 
-import darknet as dn
-import pdb
-import numpy as np
-import cv2
+import darknet as dn  # noqa
+import pdb  # noqa
+import cv2  # noqa
 
 
 IMG_PATH = '/home/demlution/data/extend/dataset/gt_marked_valid/d1ab13599be510f5c160d40555269461.jpg'

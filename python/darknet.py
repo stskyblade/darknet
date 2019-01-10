@@ -1,7 +1,16 @@
 from __future__ import print_function
 
-from ctypes import *
-import math
+from ctypes import (
+    c_float,
+    Structure,
+    c_int,
+    POINTER,
+    c_char_p,
+    CDLL,
+    RTLD_GLOBAL,
+    c_void_p,
+    pointer,
+)
 import random
 
 
@@ -50,8 +59,7 @@ class METADATA(Structure):
                 ("names", POINTER(c_char_p))]
 
 
-
-#lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
+# lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
 lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
